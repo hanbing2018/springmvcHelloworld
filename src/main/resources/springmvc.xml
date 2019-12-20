@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.unicom"></context:component-scan>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <bean id="dateConverter" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.unicom.utils.StringToDateConverter"></bean>
+            </set>
+        </property>
+    </bean>
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="10485760"/>
+    </bean>
+    <bean id="sysExceptionResolver" class="com.unicom.exception.SysExceptionResovler"></bean>
+
+
+    <mvc:resources location="/css/" mapping="/css/**"/> <!-- 样式 -->
+    <mvc:resources location="/images/" mapping="/images/**"/> <!-- 图片 -->
+    <mvc:resources location="/js/" mapping="/js/**"/> <!-- javascript -->
+    <mvc:annotation-driven conversion-service="dateConverter"></mvc:annotation-driven>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/user/*"/>
+            <bean class="com.unicom.interceptor.Interceptor"></bean>
+        </mvc:interceptor>
+
+        <mvc:interceptor>
+            <mvc:mapping path="/user/*"/>
+            <bean class="com.unicom.interceptor.Interceptor2"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+</beans>
